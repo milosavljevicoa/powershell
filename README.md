@@ -24,3 +24,12 @@ Function Cht_Sh {
 	Invoke-WebRequest -Uri "https://cht.sh/$sel/:learn" | Select-Object -Expand Content
 }
 ```
+
+Chose sub directroy and change to its directory. Starting directory is current directory (Can be slow if there are a lot of directory)
+```
+Get-ChildItem -Recurse -Directory | Select FullName -ExpandProperty FullName | fzf | Set-Location
+```
+Save as above but can filter by some text. Note that the `*` is used as a wild card
+```
+Get-ChildItem -Recurse -Directory -Filter '*example-dir*' | Select FullName -ExpandProperty FullName | fzf | Set-Location
+```
