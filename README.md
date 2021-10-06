@@ -1,35 +1,15 @@
-# Useful Powershell Commands
+# Windows Powershell
 
-If you want to easily go to this page, open `~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` and add the following commands:
-```
-Function Get-UsefulPowershellCommands {Start-Process https://github.com/milosavljevicoa/useful-powershell-commands/blob/main/README.md}
-Set-Alias -Name upc -Value Get-UsefulPowershellCommands
-```
-then just simply reaload your powershell and enter 'upc', voila, your browser will open up with this page.
- 
- 
- - seacrh for a file (from current worknig directory) by matching a pattern and display its absolute path
-```
-gci -r -fi '*.*' | Select FullName
-```
+Here are some of mine powershell modules.
 
-Use `cht.sh` https://cht.sh/ to your advantage. For this feature you will need fzf https://github.com/junegunn/fzf
-(recomended to be also in PowerShell_profile.ps1)
+To use this repo you have to install [fzf](https://github.com/junegunn/fzf)
+
+## Available commands
+
+- `Get-ChtSh` (or for shorter `cht-sh`) - calls [cht.sh](https://cht.sh`) with `:learn`
+for the following `go, docker, lua, git, python`
+- `Set-FzfLocation` (or for shorter `cd-fzf`) searches directory from current and changes location to the selected one. You can add a folder name (or regex) to narrow down the search.
+Exapmle usage: `cd-fzf` or `cd-fzf "*go-lang*"`
 
 
-```
-$cht_sh_entries = "go", "docker", "lua", "git", "python"
-Function Cht_Sh {
-	$sel = $cht_sh_entries | fzf
-	Invoke-WebRequest -Uri "https://cht.sh/$sel/:learn" | Select-Object -Expand Content
-}
-```
 
-Chose sub directroy and change to its directory. Starting directory is current directory (Can be slow if there are a lot of directory)
-```
-Get-ChildItem -Recurse -Directory | Select FullName -ExpandProperty FullName | fzf | Set-Location
-```
-Save as above but can filter by some text. Note that the `*` is used as a wild card
-```
-Get-ChildItem -Recurse -Directory -Filter '*example-dir*' | Select FullName -ExpandProperty FullName | fzf | Set-Location
-```
