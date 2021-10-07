@@ -5,4 +5,4 @@ function Get-ChtSh {
         Select-Object -Expand Content
 }
 
-Set-Alias -Name cht-sh -Value Get-ChtSh
+Set-Alias -Name fzf-chtsh -Value Get-ChtSh
