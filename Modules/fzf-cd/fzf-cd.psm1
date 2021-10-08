@@ -21,5 +21,3 @@ function Set-FzfLocation {
 
     Get-FzfLocation -Directory -Filter $Filter -Depth $Depth | Set-Location
 }
-
-Set-Alias -Name fzf-cd -Value Set-FzfLocation
