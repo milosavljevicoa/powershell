@@ -6,9 +6,9 @@ To use this repo you have to install [fzf](https://github.com/junegunn/fzf)
 
 ## Available commands
 
-- `Get-ChtSh` - calls [cht.sh](https://cht.sh`) with `:learn`
-for the following `go, docker, lua, git, python` (WIP) 
-![Get-ChtSh](https://user-images.githubusercontent.com/47518781/136328962-02437aed-c6e3-4acb-bd57-49cb039d7a64.gif)
+- `Get-ChtSh` - calls [cht.sh](https://cht.sh`) for the following techonlogy and its available queries (from cht.sh)
+![Get-ChtSh](https://user-images.githubusercontent.com/47518781/136626734-88de3930-ee09-4946-a784-f19a1c7fe515.gif)
+
 
 - `Set-FzfLocation` - searches directory changes location to the selected one. Note: the search is case sensitive
 Here are the following paramters and their meaning
