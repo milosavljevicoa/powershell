@@ -2,7 +2,7 @@ function Get-FzfLocation {
     param(
         [Parameter(Mandatory = $false)] [string] $Filter = "",
         [Parameter(Mandatory = $false)] [string] $Path = ".",
-        [Parameter(Mandatory = $false)] [int] $Depth = 10,
+        [Parameter(Mandatory = $false)] [int] $Depth = 5,
         [switch] $Directory
     )
 
@@ -21,10 +21,10 @@ function Set-FzfLocation {
     param(
         [Parameter(Mandatory = $false)] [string] $Filter = "",
         [Parameter(Mandatory = $false)] [string] $Path = ".",
-        [Parameter(Mandatory = $false)] [int] $Depth = 10
+        [Parameter(Mandatory = $false)] [int] $Depth = 5
     )
 
-    Get-FzfLocation -Directory -Filter $Filter -Depth $Depth | Set-Location
+    Get-FzfLocation -Directory -Filter $Filter -Depth $Depth -Path $Path | Set-Location
 }
 
 $languages = "javascript", "typescript", "go", "lua", "powershell", "css", "html", "python", "csharp", "cpp"
@@ -40,5 +40,6 @@ function Get-ChtSh {
         $url = "${url}/${sel}~${query}"
     }
 	Invoke-WebRequest -Uri $url |
-        Select-Object -Expand Content
+        Select-Object -Expand Content | 
+        Out-Host -Paging
 }
