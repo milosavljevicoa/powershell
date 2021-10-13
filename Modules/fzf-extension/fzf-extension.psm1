@@ -27,6 +27,13 @@ function Set-FzfLocation {
     Get-FzfLocation -Directory -Filter $Filter -Depth $Depth -Path $Path | Set-Location
 }
 
+function Get-FzfHistory {
+    (Get-Content (Get-PSReadLineOption | select -ExpandProperty HistorySavePath)) | fzf --reverse --border
+}
+
+# easily revert file to master
+# git diff HEAD..master -- path/to/file.ext | git apply 
+
 $languages = "javascript", "typescript", "go", "lua", "powershell", "css", "html", "python", "csharp", "cpp"
 $commands =  "choco", "git", "git-worktree", "git-status", "git-commit", "git-rebase", , "fzf", "rg", "docker", "docker-compose"
 function Get-ChtSh {
