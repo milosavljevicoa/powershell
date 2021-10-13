@@ -31,6 +31,10 @@ function Get-FzfHistory {
     (Get-Content (Get-PSReadLineOption | select -ExpandProperty HistorySavePath)) | fzf --reverse --border
 }
 
+function Set-FzfHistory {
+    Get-FzfHistory | Invoke-Expression
+}
+
 # easily revert file to master
 # git diff HEAD..master -- path/to/file.ext | git apply 
 
