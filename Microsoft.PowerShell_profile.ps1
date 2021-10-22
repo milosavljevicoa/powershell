@@ -9,6 +9,6 @@ if (Test-Path($ChocolateyProfile)) {
 Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineKeyHandler -Chord Ctrl+f -Function ForwardWord
 
-Set-PoshPrompt -Theme blue-owl
+Set-PoshPrompt -Theme hotstick.minimal
 Set-Alias -Name chtsh -Value Get-ChtSh
 
