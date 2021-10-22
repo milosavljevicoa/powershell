@@ -35,6 +35,45 @@ function Set-FzfHistory {
     Get-FzfHistory | Invoke-Expression
 }
 
+function Remove-Branch {
+    param(
+        [switch] $All,
+        [switch] $Force
+    )
+
+    $branches = "test", "test1", "test2", "test12", "test22"
+    if ($All) {
+        # get all branches
+    } else {
+        # select single branch with fzf
+    }
+
+    $deletionFlag = if ($Force) {"-D"} else {"-d"}
+    $show_flag = $true;
+    $branches | ForEach-Object {
+        if ($show_flag) {
+            $flag = ""
+            do {
+                Write-Output "Would you like to delete `"$_`"?"
+                $flag = Read-Host "[a/A] - delete all branches, [y/Y] - delete this branch and [n/N] - skip this branch"
+
+                if ($flag -eq "a") {
+                    $show_flag = $false
+                    break
+                }
+                elseif ($flag -eq "n") {
+                    return
+                }
+                elseif ($flag -eq "y") {
+                   break
+                }
+            } while ($true)
+        }
+        git branch $deletionFlag $_
+        Write-Output "--------------------------------------"
+    }
+}
+
 # easily revert file to master
 # git diff HEAD..master -- path/to/file.ext | git apply 
 
