@@ -28,10 +28,10 @@ function Set-FzfLocation {
 }
 
 function Get-FzfHistory {
-    (Get-Content (Get-PSReadLineOption | select -ExpandProperty HistorySavePath)) | fzf --reverse --border
+    (Get-Content (Get-PSReadLineOption | Select-Object -ExpandProperty HistorySavePath)) | fzf --reverse --border
 }
 
-function Set-FzfHistory {
+function Invoke-FzfHistory {
     Get-FzfHistory | Invoke-Expression
 }
 
@@ -41,16 +41,14 @@ function Remove-Branch {
         [switch] $Force
     )
 
-    $branches = "test", "test1", "test2", "test12", "test22"
-    if ($All) {
-        # get all branches
-    } else {
-        # select single branch with fzf
+    $selected_branches = git branch | ForEach-Object { $_.Trim() | Where-Object { $_ -Match "^(?!\*).*"} }
+    if (!$All) {
+        $selected_branches = $selected_branches | fzf --reverse --border
     }
 
     $deletionFlag = if ($Force) {"-D"} else {"-d"}
     $show_flag = $true;
-    $branches | ForEach-Object {
+    $selected_branches | ForEach-Object {
         if ($show_flag) {
             $flag = ""
             do {
@@ -74,6 +72,27 @@ function Remove-Branch {
     }
 }
 
+function Set-FzfBranch {
+    param(
+        [switch] $Remote
+    )
+    
+    if ($Remote) {
+        git fetch
+
+        $branch = git branch -r | ForEach-Object { $_.Trim() | Where-Object { $_ -Match ".*^(?!HEAD).*"} } | fzf --reverse --border
+        if ($branch) {
+            git checkout -b $branch.Replace("origin/", "") $branch
+        }
+    }
+    else {
+        $branch = git branch | ForEach-Object { $_.Trim() | Where-Object { $_ -Match "^(?!\*).*"} } | fzf --reverse --border
+        if ($branch) {
+            git checkout $branch
+        }
+    }
+}
+
 # easily revert file to master
 # git diff HEAD..master -- path/to/file.ext | git apply 
 
@@ -81,14 +100,20 @@ $languages = "javascript", "typescript", "go", "lua", "powershell", "css", "html
 $commands =  "choco", "git", "git-worktree", "git-status", "git-commit", "git-rebase", , "fzf", "rg", "docker", "docker-compose"
 function Get-ChtSh {
 	$sel = ($languages +  $commands) | fzf --reverse --border
+    if (!$sel) {
+        return
+    }
+
     $query = Read-Host "Enter Query"
     $url = "https://cht.sh"
+
     if ($languages.Contains($sel)) {
         $modified_query = $query.Trim().Replace(" ", "+")
         $url = "${url}/${sel}/${modified_query}"
     } else {
         $url = "${url}/${sel}~${query}"
     }
+
 	Invoke-WebRequest -Uri $url |
         Select-Object -Expand Content | 
         Out-Host -Paging
