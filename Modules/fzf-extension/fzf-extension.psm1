@@ -89,8 +89,8 @@ function Set-FzfBranch {
         $branches = git branch | ForEach-Object { $_.Trim() | Where-Object { $_ -Match "^(?!\*).*"} }
         $main_branch_name = "main"
         $master_branch_name = "master"
-        $main_branch_index = $branches.Contains($main_branch_name)
-        $master_branch_index = $branches.Contains($master_branch_name)
+        $main_branch_index = $branches.IndexOf($main_branch_name)
+        $master_branch_index = $branches.IndexOf($master_branch_name)
         if ($branches.Count -ge 2) {
             if ($main_branch_index -ge 0) {
                 $branches[$main_branch_index] = $branches[0]
