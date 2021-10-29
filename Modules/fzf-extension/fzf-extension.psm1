@@ -86,7 +86,21 @@ function Set-FzfBranch {
         }
     }
     else {
-        $branch = git branch | ForEach-Object { $_.Trim() | Where-Object { $_ -Match "^(?!\*).*"} } | fzf --reverse --border
+        $branches = git branch | ForEach-Object { $_.Trim() | Where-Object { $_ -Match "^(?!\*).*"} }
+        $main_branch_name = "main"
+        $master_branch_name = "master"
+        $main_branch_index = $branches.Contains($main_branch_name)
+        $master_branch_index = $branches.Contains($master_branch_name)
+        if ($branches.Count -ge 2) {
+            if ($main_branch_index -ge 0) {
+                $branches[$main_branch_index] = $branches[0]
+                $branches[0] = $main_branch_name
+            } elseif ($master_branch_index -ge 0) {
+                $branches[$master_branch_index] = $branches[0]
+                $branches[0] = $master_branch_name
+            }
+        }
+        $branch = $branches | fzf --reverse --border
         if ($branch) {
             git checkout $branch
         }
