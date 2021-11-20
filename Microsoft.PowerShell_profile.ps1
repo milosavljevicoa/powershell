@@ -16,20 +16,10 @@ Set-PoshPrompt -Theme wopian
 
 Set-Alias -Name chtsh -Value Get-ChtSh
 Set-Alias -Name b -Value Set-FzfBranch
-
-# functions to alias
-function Get-GitStatus { & git status }
 Set-Alias -Name gs -Value Get-GitStatus -Force
-function Get-GitLog {
-    param(
-        [switch] $Diff
-    )
-    if ($Diff) {
-      git log -p $arg
-    } else {
-      git log $arg
-    }
-}
 Set-Alias -Name gl -Value Get-GitLog -Force
-function Get-GitFetch { & git fetch $args }
 New-Alias -Name f -Value Get-GitFetch -Force
+New-Alias -Name pr -Value Invoke-PushRemote -Force
+New-Alias -Name gd -Value Get-GitDiff -Force
+New-Alias -Name gst -Value Get-GitStash -Force
+
