@@ -1,24 +1,27 @@
 function Get-GitStatus { & git status }
 function Get-GitFetch { & git fetch $args }
+function Get-GitPull { & git pull $args }
 function Invoke-PushRemote { & git push -u origin HEAD }
 function Get-GitDiff { 
-  param([int] $Lines = 10)
-  git diff "-U$Lines"
+  param(
+    [int] $Lines = 10,
+    [switch] $Staged
+  )
+  $staged_suffix = if ($Staged) { "--staged" } else { "" }
+  git diff "-U$Lines" $staged_suffix
 }
 function Get-GitLog {
     param(
-        [switch] $Diff,
-        [int] $Lines = 10
+        [int] $Lines,
+        [string] $Grep = "",
+        [switch] $OneLine
     )
-    if ($Diff) {
-      git log -p $arg -U$Lines
-    } else {
-      git log $arg -U$Lines
-    }
+    $one_line = $OneLine ? '--pretty="format:%Cblue%h%Creset - %C(Yellow)%s%Creset - %C(cyan)<%ae>%Creset%n%C(magenta)%aD - %ar%Creset"' : ''
+    $line_arg = ($Lines -eq 0) ? "" : "-U$Line"
+    git log $arg --grep="$grep" $line_arg $one_line
 }
 function Get-GitStash {
   param(
-    [switch] $List,
     [Parameter(Mandatory = $false)] [int] $Show = -1,
     [Parameter(Mandatory = $false)] [int] $Lines = 10,
     [Parameter(Mandatory = $false)] [int] $Apply = -1,
@@ -26,10 +29,6 @@ function Get-GitStash {
     [Parameter(Mandatory = $false)] [int] $Drop = -1,
     [Parameter(Mandatory = $false)] [string] $SaveMessage = ""
   )
-  if ($List) {
-    git stash list
-    return
-  }
   if ($Show -ge 0) {
     git stash show stash@"{$Show}" -p "-U$Lines"
     return
@@ -50,6 +49,7 @@ function Get-GitStash {
     git stash push -m $SaveMessage
     return
   }
+  git stash list
 }
 function Set-FzfBranch {
     param(
@@ -85,6 +85,7 @@ function Set-FzfBranch {
         }
     }
 }
+
 function Remove-Branch {
     param(
         [switch] $All,
@@ -97,7 +98,7 @@ function Remove-Branch {
     }
 
     $deletionFlag = if ($Force) {"-D"} else {"-d"}
-    $show_flag = $true;
+    $show_flag = $All;
     $selected_branches | ForEach-Object {
         if ($show_flag) {
             $flag = ""
@@ -122,6 +123,10 @@ function Remove-Branch {
     }
 }
 
+function Remove-AllChangedFiles {
+  git restore .
+  return
+}
 
 # easily revert file to master
 # git diff HEAD..master -- path/to/file.ext | git apply 
