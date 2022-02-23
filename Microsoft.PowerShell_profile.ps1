@@ -24,3 +24,4 @@ New-Alias -Name gd -Value Get-GitDiff -Force
 New-Alias -Name gst -Value Get-GitStash -Force
 New-Alias -Name gcl -Value Remove-AllChangedFiles -Force
 New-Alias -Name gp -Value Get-GitPull -Force
+New-Alias -Name gls -Value Get-GitShow -Force
