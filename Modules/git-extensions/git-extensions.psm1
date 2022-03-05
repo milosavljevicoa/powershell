@@ -5,10 +5,17 @@ function Invoke-PushRemote { & git push -u origin HEAD }
 function Get-GitDiff { 
   param(
     [int] $Lines = 10,
-    [switch] $Staged
+    [switch] $Staged,
+    [switch] $SingleFile
   )
   $staged_suffix = if ($Staged) { "--staged" } else { "" }
-  git diff "-U$Lines" $staged_suffix
+  $file_to_diff = ""
+  if ($SingleFile) {
+    $file_to_diff = git status --short | fzf --ansi --reverse --border
+    $file_to_diff = $file_to_diff.Trim()
+    $file_to_diff = $file_to_diff.Substring($file_to_diff.IndexOf(" "), $file_to_diff.Length - 1).Trim()
+  }
+  git diff "-U$Lines" $staged_suffix "$file_to_diff"
 }
 function Get-GitLog {
   param(
@@ -139,9 +146,33 @@ function Remove-Branch {
   }
 }
 
-function Remove-AllChangedFiles {
-  git restore .
-  return
+function Invoke-GitRestore {
+  param(
+    [switch] $All,
+    [switch] $Hunk
+  )
+
+  if ($All) {
+    Write-Output "Are you sure you want to restore all unstaged changes?"
+    $flag = Read-Host "[y/Y] - yes [n/N] - no"
+
+    if ($flag -eq "y") {
+      git restore .
+      return
+    }
+  } else {
+    $file_to_restore = git status --short | fzf --ansi --reverse --border
+    if (-Not $file_to_restore) {
+      return
+    }
+    $file_to_restore = $file_to_restore.Trim()
+    $file_to_restore = $file_to_restore.Substring($file_to_restore.IndexOf(" "), $file_to_restore.Length - 1).Trim()
+    if ($Hunk) {
+      git checkout -p $file_to_restore
+      return
+    }
+    git restore $file_to_restore
+  }
 }
 
 # easily revert file to master
